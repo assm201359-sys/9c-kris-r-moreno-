@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kris R</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#121212;
+    color:#FFFFFF;
+    transition:.4s;
+}
+
+header{
+    background:#00E676;
+    padding:20px;
+    text-align:center;
+    color:#121212;
+}
+
+main{
+    width:90%;
+    max-width:1000px;
+    margin:auto;
+    padding:30px;
+}
+
+.imagen{
+    display:flex;
+    justify-content:center;
+    margin:20px 0;
+}
+
+.imagen img{
+    width:300px;
+    max-width:100%;
+    border-radius:15px;
+}
+
+p{
+    text-align:justify;
+    font-size:18px;
+    margin-bottom:20px;
+}
+
+.botones{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+button,a{
+    background:#00E676;
+    color:#121212;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+button:hover,a:hover{
+    transform:scale(1.05);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #00E676;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#00E676;
+    color:#121212;
+}
+
+#horario{
+    display:none;
+}
+
+@media(max-width:700px){
+    table{
+        font-size:12px;
+    }
+
+    button,a{
+        width:100%;
+        text-align:center;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<h1>Kris R</h1>
+</header>
+
+<main>
+
+<div class="imagen">
+<img src="2.webp" alt="Kris R">
+</div>
+
+<p>
+Kris R es un cantante y compositor colombiano de música urbana que ha ganado reconocimiento por combinar reguetón, trap y drill. Sus canciones hablan sobre la vida en el barrio, la superación personal, el dinero y las experiencias cotidianas de muchos jóvenes.
+</p>
+
+<div class="botones">
+<button onclick="mostrarHorario()">Mostrar horario</button>
+
+<button onclick="cambiarColor()">Cambiar fondo</button>
+
+<a href="Registro.html">Registro</a>
+</div>
+
+<div id="horario">
+
+<h2>Horario Escolar</h2>
+
+<table>
+
+<tr>
+<th>Hora</th>
+<th>Lunes</th>
+<th>Martes</th>
+<th>Miércoles</th>
+<th>Jueves</th>
+<th>Viernes</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>Español</td>
+<td>Sociales</td>
+<td>Estadística</td>
+<td>Filosofía</td>
+<td>Dibujo</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>Biología</td>
+<td>Francés</td>
+<td>Español</td>
+<td>Francés</td>
+<td>Skills</td>
+</tr>
+
+<tr>
+<td>3</td>
+<td>Skills</td>
+<td>Matemáticas</td>
+<td>Inglés</td>
+<td>Inglés</td>
+<td>Sociales</td>
+</tr>
+
+<tr>
+<td>4</td>
+<td>Francés</td>
+<td>Informática</td>
+<td>PILEO</td>
+<td>Matemáticas</td>
+<td>Matemáticas</td>
+</tr>
+
+<tr>
+<td>5</td>
+<td>Inglés</td>
+<td>Biología</td>
+<td>Sociales</td>
+<td>Informática</td>
+<td>Danzas</td>
+</tr>
+
+</table>
+
+</div>
+
+</main>
+
+<script>
+
+function mostrarHorario(){
+
+let horario=document.getElementById("horario");
+
+if(horario.style.display=="block"){
+    horario.style.display="none";
+}else{
+    horario.style.display="block";
+}
+
+}
+
+let oscuro=true;
+
+function cambiarColor(){
+
+if(oscuro){
+    document.body.style.background="#2E2E2E";
+}else{
+    document.body.style.background="#121212";
+}
+
+oscuro=!oscuro;
+
+}
+
+</script>
+
+</body>
+</html>
