@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#121212;
+            color:#FFFFFF;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .contenedor{
+            width:350px;
+            background:#1f1f1f;
+            padding:30px;
+            border-radius:15px;
+            text-align:center;
+            border:2px solid #00E676;
+        }
+
+        h1{
+            color:#00E676;
+            margin-bottom:20px;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin:10px 0;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+            background:#00E676;
+            color:#121212;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:16px;
+            font-weight:bold;
+            transition:0.3s;
+        }
+
+        button:hover{
+            background:#00c853;
+        }
+
+        #mensaje{
+            margin-top:15px;
+            color:#ff5252;
+        }
+
+        a{
+            color:#00E676;
+            text-decoration:none;
+            display:block;
+            margin-top:20px;
+        }
+
+        a:hover{
+            text-decoration:underline;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="contenedor">
+
+    <h1>Registro</h1>
+
+    <input type="text" id="usuario" placeholder="Nombre de usuario">
+
+    <input type="password" id="clave" placeholder="Contraseña">
+
+    <button onclick="registrar()">Ingresar</button>
+
+    <p id="mensaje"></p>
+
+    <a href="index.html">← Volver al inicio</a>
+
+</div>
+
+<script>
+
+function registrar(){
+
+    let usuario = document.getElementById("usuario").value.trim();
+    let clave = document.getElementById("clave").value;
+    let mensaje = document.getElementById("mensaje");
+
+    if(usuario === "" || clave === ""){
+        mensaje.innerHTML = "Complete todos los campos.";
+        return;
+    }
+
+    if(clave === "sapapt"){
+
+        localStorage.setItem("usuario", usuario);
+
+        alert("¡Registro exitoso!");
+
+        window.location.href = "Menu.html";
+
+    }else{
+
+        mensaje.innerHTML = "Contraseña incorrecta.";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
