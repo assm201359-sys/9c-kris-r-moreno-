@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shooter Arcade 2D</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+
+        canvas {
+            background-color: #050510;
+            border: 2px solid #00ffcc;
+            display: block;
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px 40px;
+            border: 2px solid #ff0055;
+            border-radius: 8px;
+            display: none;
+        }
+
+        #game-over h1 {
+            color: #ff0055;
+            margin-top: 0;
+        }
+
+        #btn-menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            font-size: 14px;
+            padding: 6px 12px;
+        }
+
+        #btn-menu:hover {
+            background: #00ffcc;
+            color: #000;
+        }
+
+        button {
+            background: #00ffcc;
+            border: none;
+            color: #000;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #ffffff;
+            box-shadow: 0 0 10px #00ffcc;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div id="ui">
+            Puntos: <span id="score">0</span>
+        </div>
+
+        <button id="btn-menu" onclick="goToMenu()">🏠 Menú</button>
+
+        <div id="game-over">
+            <h1>¡JUEGO TERMINADO!</h1>
+            <p>Puntuación final: <span id="final-score">0</span></p>
+            <button onclick="restartGame()">Jugar de nuevo</button>
+            <br><br>
+            <button onclick="goToMenu()">Menú principal</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const gameOverEl = document.getElementById('game-over');
+        const finalScoreEl = document.getElementById('final-score');
+
+        let score = 0;
+        let isGameOver = false;
+
+        // Estado de teclas
+        const keys = {
+            ArrowLeft: false,
+            ArrowRight: false,
+            KeyA: false,
+            KeyD: false,
+            Space: false
+        };
+
+        // Jugador
+        const player = {
+            x: canvas.width / 2 - 20,
+            y: canvas.height - 50,
+            width: 40,
+            height: 30,
+            speed: 6,
+            color: '#00ffcc',
+            lastShot: 0,
+            shootDelay: 150 // Milisegundos entre disparos
+        };
+
+        // Listas de entidades
+        let bullets = [];
+        let enemies = [];
+        let particles = [];
+        let spawnTimer = 0;
+
+        // Controles de teclado
+        window.addEventListener('keydown', (e) => {
+            if (e.code in keys) keys[e.code] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code in keys) keys[e.code] = false;
+        });
+
+        // Crear una nueva bala
+        function shoot() {
+            const now = Date.now();
+            if (now - player.lastShot > player.shootDelay) {
+                bullets.push({
+                    x: player.x + player.width / 2 - 3,
+                    y: player.y,
+                    width: 6,
+                    height: 15,
+                    speed: 10,
+                    color: '#ffff00'
+                });
+                player.lastShot = now;
+            }
+        }
+
+        // Generar enemigos
+        function spawnEnemy() {
+            const size = Math.random() * 20 + 20; // Tamaño entre 20 y 40
+            enemies.push({
+                x: Math.random() * (canvas.width - size),
+                y: -size,
+                width: size,
+                height: size,
+                speed: Math.random() * 2 + 1.5,
+                color: '#ff0055'
+            });
+        }
+
+        // Crear explosión de partículas
+        function createExplosion(x, y, color) {
+            for (let i = 0; i < 12; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6,
+                    radius: Math.random() * 3 + 1,
+                    alpha: 1,
+                    color: color
+                });
+            }
+        }
+
+        // Reiniciar juego
+        function goToMenu() {
+            location.href = 'MENU.HTML';
+        }
+
+        function restartGame() {
+            score = 0;
+            scoreEl.textContent = score;
+            bullets = [];
+            enemies = [];
+            particles = [];
+            player.x = canvas.width / 2 - 20;
+            isGameOver = false;
+            gameOverEl.style.display = 'none';
+            animate();
+        }
+
+        // Bucle principal del juego
+        function animate() {
+            if (isGameOver) return;
+
+            requestAnimationFrame(animate);
+
+            // Limpiar pantalla
+            ctx.fillStyle = 'rgba(5, 5, 16, 0.3)'; // Efecto estela
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // --- MOVER JUGADOR ---
+            if ((keys.ArrowLeft || keys.KeyA) && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if ((keys.ArrowRight || keys.KeyD) && player.x < canvas.width - player.width) {
+                player.x += player.speed;
+            }
+            if (keys.Space) {
+                shoot();
+            }
+
+            // Dibujar Jugador
+            ctx.fillStyle = player.color;
+            ctx.beginPath();
+            ctx.moveTo(player.x + player.width / 2, player.y);
+            ctx.lineTo(player.x, player.y + player.height);
+            ctx.lineTo(player.x + player.width, player.y + player.height);
+            ctx.closePath();
+            ctx.fill();
+
+            // --- ACTUALIZAR BALAS ---
+            bullets.forEach((bullet, index) => {
+                bullet.y -= bullet.speed;
+
+                // Dibujar bala
+                ctx.fillStyle = bullet.color;
+                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+
+                // Eliminar balas fuera de pantalla
+                if (bullet.y < -bullet.height) {
+                    bullets.splice(index, 1);
+                }
+            });
+
+            // --- GENERAR ENEMIGOS ---
+            spawnTimer++;
+            if (spawnTimer % 40 === 0) {
+                spawnEnemy();
+            }
+
+            // --- ACTUALIZAR ENEMIGOS ---
+            enemies.forEach((enemy, eIndex) => {
+                enemy.y += enemy.speed;
+
+                // Dibujar enemigo
+                ctx.fillStyle = enemy.color;
+                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
+                // Colisión enemigo - jugador
+                if (
+                    player.x < enemy.x + enemy.width &&
+                    player.x + player.width > enemy.x &&
+                    player.y < enemy.y + enemy.height &&
+                    player.y + player.height > enemy.y
+                ) {
+                    isGameOver = true;
+                    finalScoreEl.textContent = score;
+                    gameOverEl.style.display = 'block';
+                    createExplosion(player.x + player.width / 2, player.y + player.height / 2, '#00ffcc');
+                }
+
+                // Colisión bala - enemigo
+                bullets.forEach((bullet, bIndex) => {
+                    if (
+                        bullet.x < enemy.x + enemy.width &&
+                        bullet.x + bullet.width > enemy.x &&
+                        bullet.y < enemy.y + enemy.height &&
+                        bullet.y + bullet.height > enemy.y
+                    ) {
+                        // Crear explosión
+                        createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, '#ff0055');
+
+                        // Eliminar bala y enemigo
+                        setTimeout(() => {
+                            enemies.splice(eIndex, 1);
+                            bullets.splice(bIndex, 1);
+                        }, 0);
+
+                        // Aumentar puntuación
+                        score += 10;
+                        scoreEl.textContent = score;
+                    }
+                });
+
+                // Eliminar enemigos que pasan la pantalla
+                if (enemy.y > canvas.height) {
+                    enemies.splice(eIndex, 1);
+                }
+            });
+
+            // --- PARTICULAS (EXPLOSIONES) ---
+            particles.forEach((particle, index) => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.alpha -= 0.02;
+
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, particle.alpha);
+                ctx.fillStyle = particle.color;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+        }
+
+        // Iniciar bucle por primera vez
+        animate();
+    </script>
+</body>
+</html>
