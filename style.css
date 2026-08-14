@@ -1,0 +1,94 @@
+body {
+    background-color: #010e26;
+}
+
+.titulo {
+    color: #fff;
+}
+
+.contenedor {
+    display: flex;
+    justify-content: center;
+    border: 1px solid white;
+}
+
+.conten-principal {
+    display: flex;
+    border: 1px solid white;
+    height: 100%;
+    width: 100%;
+}
+
+.parrafo {
+    color: #fff;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.conten-imagen {
+    display: flex;
+    border: 1px solid white;
+    margin: 10px;
+    width: 300px;
+}
+
+.conten-parrafo {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid white;
+    margin: 10px;
+    width: 70%;
+}
+
+.p-nombre {
+    color: #fff;
+    font-size: 40px;
+    text-align: center;
+}
+
+.botones_1 {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.boton_1 {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+    background: transparent;
+    border: 2px solid #39ff14;
+    border-radius: 6px;
+    text-decoration: none;
+    box-shadow: 0 0 8px rgba(57, 255, 20, 0.6), inset 0 0 10px rgba(57, 255, 20, 0.15);
+    margin: 10px;
+}
+
+.horario {
+    color: #FFFFFF;
+    text-align: center;
+    border: 1px solid white;
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid white;
+}
+
+.tabla th,
+.tabla td {
+    border: 1px solid white;
+    padding: 8px;
+    text-align: center;
+}
+
+.modo-hacker th {
+    background-color: #87cefa !important;
+    color: #000 !important;
+}
+
+.modo-hacker td {
+    background-color: #ffd700 !important;
+    color: #000 !important;
+}
